@@ -8,9 +8,14 @@ MAINTAINER Seán C McCord "ulexus@gmail.com"
 
 ENV ASTERISK_VER 17.3.0
 
+# Update stretch repositories
+RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
+           -e 's|security.debian.org|archive.debian.org/|g' \
+           -e '/stretch-updates/d' /etc/apt/sources.list
+
 # Install Asterisk
 RUN apt-get update && \
-   apt-get install -y autoconf build-essential libjansson-dev libxml2-dev libncurses5-dev libspeex-dev libcurl4-openssl-dev libedit-dev libspeexdsp-dev libgsm1-dev libsrtp0-dev uuid-dev sqlite3 libsqlite3-dev libspandsp-dev pkg-config python-dev libssl-dev openssl libopus-dev liburiparser-dev xmlstarlet curl wget && \
+   apt-get install -y autoconf build-essential libcurl3 libjansson-dev libxml2-dev libncurses5-dev libspeex-dev libcurl4-openssl-dev libedit-dev libspeexdsp-dev libgsm1-dev libsrtp0-dev uuid-dev sqlite3 libsqlite3-dev libspandsp-dev pkg-config python-dev libssl-dev openssl libopus-dev liburiparser-dev xmlstarlet curl wget git && \
    apt-get clean && \
    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -18,6 +23,11 @@ WORKDIR /tmp
 RUN curl -o /tmp/asterisk.tar.gz http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VER}.tar.gz && \
    tar xf /tmp/asterisk.tar.gz && \
    cd /tmp/asterisk-${ASTERISK_VER}
+
+RUN curl -L -o /tmp/audiofork.tar.gz https://github.com/nadirhamid/asterisk-audiofork/archive/refs/tags/v0.0.1.tar.gz &&\
+   cd /tmp/asterisk-${ASTERISK_VER} &&\
+   tar xf /tmp/audiofork.tar.gz &&\
+   cp asterisk-audiofork-0.0.1/app_audiofork.c apps/
 
 RUN curl -L -o /tmp/audiosocket.tar.gz https://github.com/CyCoreSystems/audiosocket/archive/master.tar.gz &&\
    cd /tmp/asterisk-${ASTERISK_VER} &&\
@@ -42,6 +52,11 @@ COPY --from=builder /usr/lib/libasterisk* /usr/lib/
 COPY --from=builder /usr/lib/asterisk/ /usr/lib/asterisk
 COPY --from=builder /var/lib/asterisk/ /var/lib/asterisk
 COPY --from=builder /var/spool/asterisk/ /var/spool/asterisk
+
+# Update stretch repositories
+RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
+           -e 's|security.debian.org|archive.debian.org/|g' \
+           -e '/stretch-updates/d' /etc/apt/sources.list
 
 # Add required runtime libs
 RUN apt-get update && \
