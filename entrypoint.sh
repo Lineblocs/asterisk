@@ -6,21 +6,20 @@ if [ "$CLOUD" != "" ]; then
    PROVIDER="-provider ${CLOUD}"
 fi
 
-PRIVATE_IPV4=$(netdiscover -field privatev4 ${PROVIDER})
-PUBLIC_IPV4=$(netdiscover -field publicv4 ${PROVIDER})
-PROXY_IPV4=${PUBLIC_IPV4}
+# NOTE: variables below which are exported are used in envsubst and probably not defined beforehand. If you wish to pass
+# another one, TLS_ENABLED for example, and it has not been defined before in the docker run command, you need to export
+# it to make it available in subcommands (ie. envsubst).
+
+export PRIVATE_IPV4=$(netdiscover -field privatev4 ${PROVIDER})
+export PUBLIC_IPV4=$(netdiscover -field publicv4 ${PROVIDER})
+export PROXY_IPV4=${PUBLIC_IPV4}
 
 
 for filename in /etc/asterisk/*.conf; do
     CFG_PATH="${filename}"
-    sed "s/PRIVATE_IPV4/${PRIVATE_IPV4}/g" $CFG_PATH > $CFG_PATH.cop
-    sed "s/PUBLIC_IPV4/${PUBLIC_IPV4}/g" $CFG_PATH.cop > $CFG_PATH.cop2
-    sed "s/PROXY_IPV4/${PROXY_IPV4}/g" $CFG_PATH.cop2 > $CFG_PATH.cop3
-    sed "s/LINEBLOCS_KEY/${LINEBLOCS_KEY}/g" $CFG_PATH.cop3 > $CFG_PATH.cop4
-    sed "s/ARI_PASSWORD/${ARI_PASSWORD}/g" $CFG_PATH.cop4 > $CFG_PATH.cop5
-    sed "s/AMI_PASS/${AMI_PASS}/g" $CFG_PATH.cop5 > $CFG_PATH.final
-    rm -rf $CFG_PATH.cop*
-    yes|mv  $CFG_PATH.final $CFG_PATH
+    cp $CFG_PATH $CFG_PATH.temp
+    envsubst < $CFG_PATH.temp > $CFG_PATH
+    rm -rf $CFG_PATH.temp
 done
 
 
