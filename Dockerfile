@@ -60,7 +60,7 @@ RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
 
 # Add required runtime libs
 RUN apt-get update && \
-   apt-get install -y gnupg libjansson4 xml2 libncurses5 libspeex1 libcurl4-openssl-dev libedit2 libspeexdsp1 libgsm1 libsrtp0 uuid libsqlite3-0 libspandsp2 libssl1.1 libopus0 liburiparser1 xmlstarlet curl wget && \
+   apt-get install -y gnupg libjansson4 xml2 libncurses5 libspeex1 libcurl4-openssl-dev libedit2 libspeexdsp1 libgsm1 libsrtp0 uuid libsqlite3-0 libspandsp2 libssl1.1 libopus0 liburiparser1 xmlstarlet curl wget gettext-base && \
    apt-get clean && \
    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
