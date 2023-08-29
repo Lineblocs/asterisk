@@ -18,7 +18,7 @@ export PROXY_IPV4=${PUBLIC_IPV4}
 for filename in /etc/asterisk/*.conf; do
     CFG_PATH="${filename}"
     cp $CFG_PATH $CFG_PATH.temp
-    envsubst < $CFG_PATH.temp > $CFG_PATH
+    envsubst '$PRIVATE_IPV4 $PUBLIC_IPV4 $PROXY_IPV4 $LINEBLOCS_KEY $ARI_PASSWORD $AMI_PASS' < $CFG_PATH.temp > $CFG_PATH
     rm -rf $CFG_PATH.temp
 done
 
