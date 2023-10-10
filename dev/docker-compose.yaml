@@ -1,0 +1,26 @@
+version: "3.6"
+x-logging: &default-logging
+  options:
+    max-size: "100m"
+    max-file: "5"
+  driver: json-file
+services:
+  asterisk:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: lineblocs-asterisk
+    volumes:
+      - ../configs:/etc/asterisk/
+    logging: *default-logging
+    container_name: lineblocs-asterisk
+    restart: unless-stopped
+    environment:
+      - AMI_USER=${AMI_USER}
+      - AMI_PASS=${AMI_PASS}
+      - AMI_PORT=${AMI_PORT}
+      - AMI_HOST=${AMI_HOST}
+      - ARI_USERNAME=${ARI_USERNAME}
+      - ARI_PASSWORD=${ARI_PASSWORD}
+      - LINEBLOCS_KEY=${LINEBLOCS_KEY}
+    network_mode: "host"
