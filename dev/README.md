@@ -24,7 +24,7 @@ $ docker compose up -d
 
 ## Advance running
 
-### Clone user-app project 
+### Clone asterisk project 
 Clone docker compose and move to directory.
 ```shell
 $ git clone https://github.com/Lineblocs/asterisk.git
