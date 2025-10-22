@@ -29,13 +29,13 @@ RUN curl -L -o /tmp/audiofork.tar.gz https://github.com/nadirhamid/asterisk-audi
    tar xf /tmp/audiofork.tar.gz &&\
    cp asterisk-audiofork-0.0.1/app_audiofork.c apps/
 
-RUN curl -L -o /tmp/audiosocket.tar.gz https://github.com/CyCoreSystems/audiosocket/archive/master.tar.gz &&\
-   cd /tmp/asterisk-${ASTERISK_VER} &&\
-   tar xf /tmp/audiosocket.tar.gz &&\
-   cp audiosocket-master/asterisk/apps/* apps/ &&\
-   cp audiosocket-master/asterisk/channels/* channels/ &&\
-   cp -R audiosocket-master/asterisk/include/* include/ &&\
-   cp audiosocket-master/asterisk/res/* res/
+# RUN curl -L -o /tmp/audiosocket.tar.gz https://github.com/CyCoreSystems/audiosocket/archive/master.tar.gz &&\
+#    cd /tmp/asterisk-${ASTERISK_VER} &&\
+#    tar xf /tmp/audiosocket.tar.gz &&\
+#    cp audiosocket-master/asterisk/apps/* apps/ &&\
+#    cp audiosocket-master/asterisk/channels/* channels/ &&\
+#    cp -R audiosocket-master/asterisk/include/* include/ &&\
+#    cp audiosocket-master/asterisk/res/* res/
 
 RUN cd /tmp/asterisk-${ASTERISK_VER} &&\
    ./configure --with-pjproject-bundled --with-jansson-bundled --with-spandsp --with-opus && \
