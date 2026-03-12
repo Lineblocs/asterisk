@@ -26,5 +26,8 @@ done
 # Default values
 ASTERISK_ARGS="-fp"
 
+# Start the cron daemon in the background
+#cron
+
 # Run Asterisk
 /usr/sbin/asterisk ${ASTERISK_ARGS}

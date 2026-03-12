@@ -81,6 +81,24 @@ COPY ./configs/* /etc/asterisk/
 # Add entrypoint script
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+ADD scripts/cleanup_asterisk_logs.sh /usr/local/bin/cleanup_asterisk_logs.sh
+RUN chmod +x /usr/local/bin/cleanup_asterisk_logs.sh
+
+# install cron
+# todo: consolidate this with the first command we use to install APT packages. look into why this doesn't work and fix.
+RUN apt update -y && apt install -y cron && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /etc/cron.d
+
+# 3. Create the crontab file
+RUN echo "0 3 * * * /usr/local/bin/cleanup_asterisk_logs.sh" > /etc/cron.d/log-cleanup
+
+# 4. Give execution rights to the cron job
+RUN chmod 0644 /etc/cron.d/log-cleanup
+
+
+# 5. Apply the cron job
+RUN crontab /etc/cron.d/log-cleanup
 
 WORKDIR /
 ENTRYPOINT ["/entrypoint.sh"]
